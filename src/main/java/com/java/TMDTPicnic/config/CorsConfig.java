@@ -17,15 +17,21 @@ public class CorsConfig {
 
     @Bean
     public CorsFilter corsFilter() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.addAllowedOrigin(domainFe);
-        corsConfiguration.addAllowedHeader("*");
-        corsConfiguration.setExposedHeaders(Arrays.asList("Set-Cookie"));
-        corsConfiguration.addAllowedMethod("*");
+        CorsConfiguration cors = new CorsConfiguration();
+        cors.setAllowCredentials(true);
+
+        // CHO PHÉP NHIỀU DOMAIN
+        cors.setAllowedOrigins(Arrays.asList(
+                domainFe,
+                "https://deploy-tmdt-mcid-omutiy686-haotams-projects.vercel.app"  // FE thật hiện tại
+        ));
+
+        cors.addAllowedHeader("*");
+        cors.addAllowedMethod("*");
+        cors.setExposedHeaders(Arrays.asList("Set-Cookie"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfiguration);
+        source.registerCorsConfiguration("/**", cors);
         return new CorsFilter(source);
     }
 }
