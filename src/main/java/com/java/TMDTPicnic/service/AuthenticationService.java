@@ -45,11 +45,9 @@ public class AuthenticationService {
 
     public final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    @NonFinal
     @Value("${jwt.valid_duration}")
     protected long VALID_DURATION;
 
-    @NonFinal
     @Value("${jwt.refresh_token}")
     protected long REFRESH_INTERVAL;
 
