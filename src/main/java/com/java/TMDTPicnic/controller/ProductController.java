@@ -54,7 +54,7 @@ public class ProductController {
         );
     }
     // === LẤY CHI TIẾT SẢN PHẨM THEO SLUG (DẠNG CHỮ) ===
-    @GetMapping("/detail/{slug}")
+    @GetMapping("/detail/{slug:[a-zA-Z0-9\\-]+}")
     @Operation(summary = "Lấy chi tiết sản phẩm theo Slug")
     public ResponseEntity<ApiResponse<ProductResponse>> getProductBySlug(@PathVariable String slug) { // <-- Nhận String
         ProductResponse product = productService.getProductBySlug(slug); // Giả sử bạn có hàm này
@@ -143,7 +143,7 @@ public class ProductController {
     }
 
     // === LẤY CHI TIẾT SẢN PHẨM THEO ID ===
-    @GetMapping("/detail/{id}")
+    @GetMapping("/detail/{id:\\d+}")
     @Operation(summary = "Lấy chi tiết sản phẩm theo ID")
     public ResponseEntity<ApiResponse<ProductResponse>> getProductById(@PathVariable Long id) {
         ProductResponse product = productService.getProductById(id);
@@ -153,7 +153,6 @@ public class ProductController {
                         .data(product)
                         .build()
         );
-    }
 
     // === CẬP NHẬT SẢN PHẨM (ADMIN) ===
     @PutMapping(value = "/{id}", consumes = {"multipart/form-data"})
