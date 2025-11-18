@@ -1,7 +1,5 @@
 package com.java.TMDTPicnic.config;
 
-import lombok.experimental.NonFinal;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -18,16 +16,17 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 
-import javax.crypto.spec.SecretKeySpec;
-
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
-    @NonFinal
-    @Value("${jwt.signerKey}")
-    private String SIGNER_KEY;
+
+    private final JwtKeyProvider jwtKeyProvider;
+
+    public SecurityConfig(JwtKeyProvider jwtKeyProvider) {
+        this.jwtKeyProvider = jwtKeyProvider;
+    }
 
     private static final String[] PUBLIC_ENDPOINTS = {
             "/auth/**", // gom luôn login, logout, register,...
@@ -93,9 +92,8 @@ public class SecurityConfig {
 
     @Bean
     JwtDecoder jwtDecoder() {
-        SecretKeySpec secretKeySpec = new SecretKeySpec(SIGNER_KEY.getBytes(),"HS512");
         return NimbusJwtDecoder
-                .withSecretKey(secretKeySpec)
+                .withSecretKey(jwtKeyProvider.getSecretKey())
                 .macAlgorithm(MacAlgorithm.HS512)
                 .build();
     }

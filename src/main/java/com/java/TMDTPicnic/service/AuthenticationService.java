@@ -1,5 +1,6 @@
 package com.java.TMDTPicnic.service;
 
+import com.java.TMDTPicnic.config.JwtKeyProvider;
 import com.java.TMDTPicnic.dto.request.AuthenticationRequest;
 import com.java.TMDTPicnic.dto.request.ForgotPasswordRequest;
 import com.java.TMDTPicnic.dto.request.IntrospectRequest;
@@ -19,7 +20,6 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,13 +40,10 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final InvalidatedTokenRepository invalidatedTokenRepository;
     private final EmailService emailService;
+    private final JwtKeyProvider jwtKeyProvider;
     private final ConcurrentHashMap<String, AbstractMap.SimpleEntry<String, LocalDateTime>> verificationCodes = new ConcurrentHashMap<>();
 
     public final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-    @NonFinal
-    @Value("${jwt.signerKey}")
-    protected String SIGNER_KEY;
 
     @NonFinal
     @Value("${jwt.valid_duration}")
@@ -90,7 +87,7 @@ public class AuthenticationService {
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
         JWSObject jwsObject = new JWSObject(jwsHeader, payload);
         try {
-            jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
+            jwsObject.sign(new MACSigner(jwtKeyProvider.getSigningKeyBytes()));
             return jwsObject.serialize();
         } catch (JOSEException e) {
             throw new RuntimeException(e);
@@ -146,7 +143,7 @@ public class AuthenticationService {
     }
 
     private SignedJWT verifyToken(String token, boolean isRefresh) throws ParseException, JOSEException {
-        JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
+        JWSVerifier verifier = new MACVerifier(jwtKeyProvider.getSigningKeyBytes());
         SignedJWT signedJWT = SignedJWT.parse(token);
 
         if (!signedJWT.verify(verifier)) throw new AppException(ErrorCode.UNAUTHENTICATED);
