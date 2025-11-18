@@ -54,17 +54,17 @@ public class ProductController {
         );
     }
     // === LẤY CHI TIẾT SẢN PHẨM THEO SLUG (DẠNG CHỮ) ===
-    @GetMapping("/detail/{slug:[a-zA-Z0-9\\-]+}")
-    @Operation(summary = "Lấy chi tiết sản phẩm theo Slug")
-    public ResponseEntity<ApiResponse<ProductResponse>> getProductBySlug(@PathVariable String slug) { // <-- Nhận String
-        ProductResponse product = productService.getProductBySlug(slug); // Giả sử bạn có hàm này
-        return ResponseEntity.ok(
-                ApiResponse.<ProductResponse>builder()
-                        .message("Lấy sản phẩm thành công")
-                        .data(product)
-                        .build()
-        );
-    }
+    @GetMapping("/detail/slug/{slug}")
+@Operation(summary = "Lấy chi tiết sản phẩm theo Slug")
+public ResponseEntity<ApiResponse<ProductResponse>> getProductBySlug(@PathVariable String slug) {
+    ProductResponse product = productService.getProductBySlug(slug);
+    return ResponseEntity.ok(
+            ApiResponse.<ProductResponse>builder()
+                    .message("Lấy sản phẩm thành công")
+                    .data(product)
+                    .build()
+    );
+}
     // === LẤY DANH SÁCH SẢN PHẨM (Phân trang) ===
     @GetMapping("/all")
     @Operation(summary = "Lấy tất cả sản phẩm (phân trang, rút gọn metadata)")
@@ -143,17 +143,17 @@ public class ProductController {
     }
 
     // === LẤY CHI TIẾT SẢN PHẨM THEO ID ===
-    @GetMapping("/detail/{id:\\d+}")
-    @Operation(summary = "Lấy chi tiết sản phẩm theo ID")
-    public ResponseEntity<ApiResponse<ProductResponse>> getProductById(@PathVariable Long id) {
-        ProductResponse product = productService.getProductById(id);
-        return ResponseEntity.ok(
-                ApiResponse.<ProductResponse>builder()
-                        .message("Lấy sản phẩm thành công")
-                        .data(product)
-                        .build()
-        );
-
+    @GetMapping("/detail/id/{id}")
+@Operation(summary = "Lấy chi tiết sản phẩm theo ID")
+public ResponseEntity<ApiResponse<ProductResponse>> getProductById(@PathVariable Long id) {
+    ProductResponse product = productService.getProductById(id);
+    return ResponseEntity.ok(
+            ApiResponse.<ProductResponse>builder()
+                    .message("Lấy sản phẩm thành công")
+                    .data(product)
+                    .build()
+    );
+}
     // === CẬP NHẬT SẢN PHẨM (ADMIN) ===
     @PutMapping(value = "/{id}", consumes = {"multipart/form-data"})
     @Operation(summary = "ROLE-ADMIN Cập nhật thông tin sản phẩm")
