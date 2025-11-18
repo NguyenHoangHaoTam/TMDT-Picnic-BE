@@ -1,5 +1,6 @@
 package com.java.TMDTPicnic.service;
 
+import com.java.TMDTPicnic.config.FrontendConfig;
 import com.java.TMDTPicnic.config.VNPayConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import java.util.*;
 public class VNPayService {
 
     private final VNPayConfig vnPayConfig;
+    private final FrontendConfig frontendConfig;
 
     /**
      * Tạo URL thanh toán VNPay
@@ -38,7 +40,7 @@ public class VNPayService {
         params.put("vnp_OrderInfo", "Thanh toán đơn hàng #" + orderId);
         params.put("vnp_OrderType", "billpayment");
         params.put("vnp_Locale", "vn");
-        params.put("vnp_ReturnUrl", vnPayConfig.getReturnUrl());
+        params.put("vnp_ReturnUrl", resolveReturnUrl());
         params.put("vnp_IpAddr", ipAddress);
 
         // Thêm ngày tạo giao dịch
@@ -114,6 +116,14 @@ public class VNPayService {
         log.info("VNPay callback recalculated secure hash: {}", recalculatedHash);
 
         return vnp_SecureHash != null && vnp_SecureHash.equals(recalculatedHash);
+    }
+
+    private String resolveReturnUrl() {
+        String configured = vnPayConfig.getReturnUrl();
+        if (configured != null && !configured.isBlank()) {
+            return configured;
+        }
+        return frontendConfig.buildPath("/payment/vnpay-return");
     }
 
     private String hmacSHA512(String key, String data) {

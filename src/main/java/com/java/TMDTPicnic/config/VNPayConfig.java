@@ -13,4 +13,23 @@ public class VNPayConfig {
     private String tmnCode;
     private String secretKey;
     private String apiUrl;
+
+    public void setPayUrl(String payUrl) {
+        this.payUrl = normalize(payUrl);
+    }
+
+    public void setReturnUrl(String returnUrl) {
+        this.returnUrl = normalize(returnUrl);
+    }
+
+    private String normalize(String value) {
+        if (value == null) {
+            return null;
+        }
+        String trimmed = value.trim();
+        while (trimmed.endsWith("/")) {
+            trimmed = trimmed.substring(0, trimmed.length() - 1);
+        }
+        return trimmed;
+    }
 }

@@ -40,7 +40,7 @@ server:
   port: ${PORT:8080}
 
 frontend:
-  domain: ${DOMAIN_FE}
+  domain: ${DOMAIN_FE:https://tmdt-lime.vercel.app}
   port: ${PORT:8080}
 cloudinary:
   cloud-name: ${CLOUDINARY_CLOUD_NAME}
@@ -51,7 +51,7 @@ profiles:
 
 vnpay:
   pay-url: ${VNPAY_PAY_URL}
-  return-url: ${VNPAY_RETURN_URL}
+  return-url: ${VNPAY_RETURN_URL:}
   tmn-code: ${VNPAY_TMN_CODE}
   secret-key: ${VNPAY_SECRET_KEY}
   api-url: ${VNPAY_API_URL}
