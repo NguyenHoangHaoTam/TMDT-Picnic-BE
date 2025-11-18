@@ -16,22 +16,23 @@ public class CorsConfig {
     private String domainFe;
 
     @Bean
-    public CorsFilter corsFilter() {
-        CorsConfiguration cors = new CorsConfiguration();
-        cors.setAllowCredentials(true);
+public CorsFilter corsFilter() {
+    CorsConfiguration cors = new CorsConfiguration();
+    cors.setAllowCredentials(true);
 
-        // CHO PHÉP NHIỀU DOMAIN
-        cors.setAllowedOrigins(Arrays.asList(
-                domainFe,
-                "https://deploy-tmdt-mcid-omutiy686-haotams-projects.vercel.app"  // FE thật hiện tại
-        ));
+    // Domain FE chính
+    cors.addAllowedOrigin(domainFe);
 
-        cors.addAllowedHeader("*");
-        cors.addAllowedMethod("*");
-        cors.setExposedHeaders(Arrays.asList("Set-Cookie"));
+    // Cho phép tất cả subdomain Vercel (quan trọng)
+    cors.addAllowedOriginPattern("https://*.vercel.app");
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", cors);
-        return new CorsFilter(source);
-    }
+    cors.addAllowedHeader("*");
+    cors.addAllowedMethod("*");
+    cors.setExposedHeaders(Arrays.asList("Set-Cookie"));
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", cors);
+    return new CorsFilter(source);
+}
+
 }
