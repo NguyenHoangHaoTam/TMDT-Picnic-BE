@@ -1,0 +1,9 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+app:
+  cookie:
+    secure: true
+    same-site: None
