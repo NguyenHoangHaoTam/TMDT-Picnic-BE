@@ -387,12 +387,18 @@ public class OrderService {
                 firstProductThumbnail = product.getThumbnail();
             }
 
+            // Lấy phương thức thanh toán (nếu có)
+            String paymentMethod = paymentRepository.findByOrderId(order.getId())
+                    .map(Payment::getPaymentMethod)
+                    .orElse(null);
+
             return OrderSummaryResponse.builder()
                     .id(order.getId())
                     .totalAmount(order.getTotalAmount())
                     .status(order.getStatus())
                     .orderType(order.getOrderType() != null ? order.getOrderType() : "SINGLE")
                     .firstProductThumbnail(firstProductThumbnail)
+                    .paymentMethod(paymentMethod)
                     .createdAt(order.getCreatedAt())
                     .build();
         });
